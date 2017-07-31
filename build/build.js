@@ -1,11 +1,15 @@
-const webpack = require('webpack')
-const webpackConfig = require('./webpack.prod.js')
-const rm = require('rimraf')
-const ora = require('ora')
-const chalk = require('chalk')
-const spinner = ora('building for production...')
+require('./check-versions')()
+process.env.NODE_ENV = 'production'
+var ora = require('ora')
+var rm = require('rimraf')
+var path = require('path')
+var chalk = require('chalk')
+var webpack = require('webpack')
+var config = require('../config')
+var webpackConfig = require('./webpack.prod.conf')
+var spinner = ora('building for production...')
 spinner.start()
-rm('dist/', (err) => {
+rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
 	if (err) throw err
 	webpack(webpackConfig, function(err, stats) {
 		spinner.stop()
