@@ -1,4 +1,5 @@
 var path = require('path')
+const devIp = require('dev-ip')
 var config = require('../config')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 exports.assetsPath = function(_path) {
@@ -59,4 +60,10 @@ exports.styleLoaders = function(options) {
 		})
 	}
 	return output
+}
+exports.localIp = function() {
+	const ip = devIp()
+	// vpn 下 ip 为数组，第一个元素为本机局域网 ip
+	// 第二个元素为 vpn 远程局域网 ip
+	return Array.isArray(ip) ? ip[0] : ip
 }

@@ -7,6 +7,7 @@ var opn = require('opn')
 var path = require('path')
 var express = require('express')
 var webpack = require('webpack')
+const { localIp } = require('./utils.js')
 var proxyMiddleware = require('http-proxy-middleware')
 var webpackConfig = process.env.NODE_ENV === 'testing' ? require('./webpack.prod.conf') : require('./webpack.dev.conf')
 // default port where dev server listens for incoming traffic
@@ -51,7 +52,7 @@ app.use(hotMiddleware)
 // serve pure static assets
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
 app.use(staticPath, express.static('./static'))
-var uri = 'http://localhost:' + port
+var uri = `http://${localIp()}:${port}`
 var _resolve
 var readyPromise = new Promise(resolve => {
 	_resolve = resolve
