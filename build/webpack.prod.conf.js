@@ -8,7 +8,9 @@ var CopyWebpackPlugin = require('copy-webpack-plugin')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
+const zipPlugin = require('zip-webpack-plugin')
 var env = process.env.NODE_ENV === 'testing' ? require('../config/test.env') : config.build.env
+const cliConfig = require('../cli.config.js')
 var webpackConfig = merge(baseWebpackConfig, {
 	module: {
 		rules: utils.styleLoaders({
@@ -43,6 +45,10 @@ var webpackConfig = merge(baseWebpackConfig, {
 			cssProcessorOptions: {
 				safe: true
 			}
+		}),
+		new webpack.BannerPlugin({
+			banner: `@version 10\n@data ${new Date()}`, // 其值为字符串，将作为注释存在
+			//   entryOnly: true // 如果值为 true，将只在入口 chunks 文件中添加
 		}),
 		// generate dist index.html with correct asset hash for caching.
 		// you can customize output by editing /index.html
@@ -83,6 +89,12 @@ var webpackConfig = merge(baseWebpackConfig, {
 		}])
 	]
 })
+if (cliConfig.zip) {
+	webpackConfig.plugins.push(new zipPlugin({
+		filename: 'index',
+		exclude: [/__MACOSX$/, /.DS_Store$/, ...cliConfig.zipExclude]
+	}))
+}
 if (config.build.productionGzip) {
 	var CompressionWebpackPlugin = require('compression-webpack-plugin')
 	webpackConfig.plugins.push(new CompressionWebpackPlugin({
